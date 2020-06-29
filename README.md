@@ -1,8 +1,8 @@
-# net5-samples
+# net6-samples
 
-_This is an *early* preview of Xamarin in .NET 5 **not for production use**. Expect breaking changes as Xamarin is still in development for .NET 5._
+_This is an *early* preview of Xamarin in .NET 6 **not for production use**. Expect breaking changes as Xamarin is still in development for .NET 6._
 
-First install the [latest master build of .NET 5][0].
+First install the [latest master build of .NET 6][0].
 
 Projects:
 
@@ -18,16 +18,16 @@ Prerequisites:
 
 For example, to build the Android project:
 
-    dotnet publish HelloAndroid/HelloAndroid.csproj
+    dotnet build HelloAndroid/HelloAndroid.csproj
 
 You can launch the Android project to an attached emulator via:
 
-    dotnet publish HelloAndroid/HelloAndroid.csproj -t:Run
+    dotnet build HelloAndroid/HelloAndroid.csproj -t:Run
 
 To deploy and run on a device, you can either modify `$(RuntimeIdentifier)` in
 the `.csproj` or run:
 
-    dotnet publish HelloAndroid/HelloAndroid.csproj -t:Run -r android.21-arm64
+    dotnet build HelloAndroid/HelloAndroid.csproj -t:Run -r android.21-arm64
 
 ## iOS
 
@@ -37,11 +37,11 @@ Prerequisites:
 
 To build the iOS project:
 
-    dotnet publish HelloiOS/HelloiOS.csproj
+    dotnet build HelloiOS/HelloiOS.csproj
 
 To launch the iOS project on a simulator:
 
-    dotnet publish HelloiOS/HelloiOS.csproj -t:Run
+    dotnet build HelloiOS/HelloiOS.csproj -t:Run
 
 [0]: https://github.com/dotnet/installer#installers-and-binaries
 
@@ -63,11 +63,10 @@ These are notes for things we had to workaround for these samples to work.
 ### NuGet
 
 Currently, NuGet is not able to restore existing Xamarin.Android/iOS
-packages for a .NET 5 project. We used `$(AssetTargetFallback)`,
+packages for a .NET 6 project. We tried `$(AssetTargetFallback)`,
 however, this option does not work in combination with transitive
 dependencies. The `Xamarin.AndroidX.*` set of NuGet packages has a
-complex dependency tree. We just listed every package manually for
-now.
+complex dependency tree.
 
 Additionally, we had some problems with the Xamarin.Forms NuGet
 package listing the same assembly in both:
@@ -75,19 +74,8 @@ package listing the same assembly in both:
 * `lib\netstandard2.0\Xamarin.Forms.Platform.dll`
 * `lib\MonoAndroid10.0\Xamarin.Forms.Platform.dll`
 
-For now we added an MSBuild target in `Directory.Build.targets` to
-resolve this. We also had to manually reference
-`Xamarin.Forms.Platform.Android.dll`.
-
-### AndroidX MSBuild tasks
-
-We need to port some MSBuild tasks to `netstandard2.0` such as:
-[Support-Vector-Drawable-BuildTasks.csproj#L10][1].
-
-We set `$(VectorDrawableCheckBuildToolsVersionTaskBeforeTargets)` to
-an empty string in `Directory.Build.targets` for now.
-
-[1]: https://github.com/xamarin/AndroidSupportComponents/blob/68d28bc676673ec45f7f5ea2462c10bed87e2a2a/source/buildtasks/support-vector-drawable/Support-Vector-Drawable-BuildTasks.csproj#L10
+For now we added workarounds in `xamarin-android`, see
+[xamarin-android#4663](https://github.com/xamarin/xamarin-android/pull/4663).
 
 ## Contributing
 
